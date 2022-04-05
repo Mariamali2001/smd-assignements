@@ -1,12 +1,10 @@
-
 import React, { useState } from "react";
 import { useEffect } from "react";
 import * as axios from 'axios';
-import { Button, View,Dimensions, SafeAreaView, StyleSheet,Text, ScrollView } from "react-native";
+import {Dimensions, SafeAreaView, StyleSheet,Text, ScrollView } from "react-native";
 import { Card } from "react-native-elements";
 import { useRoute } from "@react-navigation/native";
-import { Container } from "postcss";
-
+import CarouselOption from '../components/CarouselOption'
 
 const ListScreen =() =>{
 const route = useRoute<RouteProps>();
@@ -16,7 +14,7 @@ const route = useRoute<RouteProps>();
 
   useEffect(() => {
     Promise.all([
-      axios.default.get(`http:/192.168.0.106:3000/universities/${term}`),
+      axios.default.get(`http:/192.168.0.107:3000/universities/${term}`),
     ])
       .then(([ { data: universitiesResults }]) => {
         if (universitiesResults) setUniversity(universitiesResults);
@@ -25,15 +23,13 @@ const route = useRoute<RouteProps>();
 
 
     return(
-        <SafeAreaView style ={styles.cardContainer}  >
-    
-
-     
-     <ScrollView>
+        <SafeAreaView style ={styles.cardContainer}  >   
+      <ScrollView>
+       
        {universities?.map((university,index:number)=>(
           
         <Card   key={index}>
-            
+           
          <Card.Title style={{ fontWeight: "bold", fontSize: 17 }}>
                   {university.slug}
                   {"\n"}
@@ -47,14 +43,18 @@ const route = useRoute<RouteProps>();
                     {university.name}
                   </Text>{" "}
                 </Card.Title>
-         <Card.Image style={{width: 350, height: 350}} source={{uri:university.image?university.image: "https://www.wildhareboca.com/wp-content/uploads/sites/310/2018/03/image-not-available.jpg"}}  resizeMode="cover"></Card.Image>
-        
-       <Text style={styles.textCard}>Address : {university.addressFmt}</Text>
+                <Card.Divider/>
+                <CarouselOption imageCards={university.image}/>
+
+         {/* <Card.Image style={{width: 350, height: 350}} source={{uri:university.image?university.image: "https://www.wildhareboca.com/wp-content/uploads/sites/310/2018/03/image-not-available.jpg"}}  resizeMode="cover"></Card.Image> */}
+       <Text style={styles.textCard}> Address: {university.addressFmt}</Text>
+
        </Card>
        ))}
 
     </ScrollView>
-    
+   
+
     </SafeAreaView>
     )
 }
@@ -76,14 +76,14 @@ type RouteParams = {
     lat: number;
     lng: number;
     slug:string;
-    image:string;
+    image:string[];
     addressFmt:string;
   }
 
   const deviceWidth= Math.round(Dimensions.get('window').width)
   const styles = StyleSheet.create({
    textCard: {
-    color: "black",
+    color: "#8F6E5B",
     fontSize: 12,
     lineHeight: 12,
     fontWeight: "bold",
@@ -94,7 +94,7 @@ type RouteParams = {
 cardContainer:{
     width:deviceWidth ,
     backgroundColor:"#8F6E5B",
-
+    
 
 },
 
@@ -103,7 +103,9 @@ Container:{
     backgroundColor:"black",
     alignItems:"center",
     
-    }
+    
+},
+
 
 }
   )
